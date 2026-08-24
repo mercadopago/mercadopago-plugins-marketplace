@@ -1,36 +1,36 @@
 # Contributing
 
-Thanks for your interest in improving the Mercado Pago Codex plugin.
+Thanks for improving the Mercado Pago Plugins Marketplace.
 
-## How to contribute
+## Scope
 
-The best way to contribute is to **open an issue** — a bug report, a feature
-request, or a question. See the issue as the entry point for any change.
-
-## Development notes
-
-- This plugin targets the [OpenAI Codex CLI](https://developers.openai.com/codex).
-- Use the source order documented in `AGENTS.md`: official country `llms.txt`,
-  bundled references, then MCP documentation only for a gap. Keep scaffolding
-  and deterministic validators usable offline.
-- Skill format follows the [Agent Skills standard](https://agentskills.io):
-  each skill is a folder with a `SKILL.md` (frontmatter `name` + `description`,
-  no `model` field) and an optional `agents/openai.yaml` declaring UI metadata
-  and MCP tool dependencies.
-- The credential hook runs on `PreToolUse` and only intercepts `Bash` commands
-  in Codex today — keep that scope in mind.
+This repository hosts plugins for more than one runtime. Keep runtime-specific
+code, manifests, skills, hooks, and user documentation inside the relevant
+`plugins/<product-id>/<runtime-id>` directory. Do not add one runtime's instructions or
+configuration to another plugin.
 
 ## Before opening a pull request
 
-Run the same public gate used by CI and the local pre-commit hook:
+Run the repository validation gate:
 
 ```sh
 sh scripts/validate_repository.sh
 ```
 
-Do not add credentials, local `.env` files, user profiles, smoke-test artifacts,
-absolute personal paths, private registry URLs, or cached plugin copies. Do not
-install or update an SDK in an example without the developer's explicit approval.
+Also run any validation documented by the plugin you changed.
+
+Do not add credentials, local `.env` files, user profiles, smoke-test
+artifacts, absolute personal paths, private registry URLs, or cached plugin
+copies. Never include real payment, buyer, account, or OAuth data in fixtures
+or documentation.
+
+## Adding a runtime or plugin
+
+- Keep each plugin self-contained under `plugins/<product-id>/<runtime-id>`.
+- Add it only to the appropriate marketplace metadata.
+- Keep root documentation runtime-neutral.
+- Document runtime-specific installation and security requirements alongside
+  the plugin.
 
 ## Code of Conduct
 

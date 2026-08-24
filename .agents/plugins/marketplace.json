@@ -9,7 +9,7 @@
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/mercadopago/mercadopago-plugins-marketplace",
-        "path": "./plugins/mercadopago"
+        "path": "./plugins/mercadopago/codex"
       },
       "policy": {
         "installation": "AVAILABLE",
