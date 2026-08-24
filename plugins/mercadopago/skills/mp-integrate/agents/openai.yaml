@@ -1,0 +1,15 @@
+interface:
+  display_name: "Mercado Pago — Integrate"
+  short_description: "Wizard that scaffolds a complete Mercado Pago integration for any product."
+  default_prompt: "Help me add a Mercado Pago integration to this project."
+
+policy:
+  allow_implicit_invocation: true
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "mercadopago"
+      description: "Official Mercado Pago MCP server — live docs, snippets, test users, quality checklist."
+      transport: "streamable_http"
+      url: "https://mcp.mercadopago.com/mcp"

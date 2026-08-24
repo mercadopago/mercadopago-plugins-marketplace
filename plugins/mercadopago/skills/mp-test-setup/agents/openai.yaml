@@ -1,0 +1,15 @@
+interface:
+  display_name: "Mercado Pago — Test Setup"
+  short_description: "Create test users and load funds for Mercado Pago testing."
+  default_prompt: "Create a Mercado Pago test user for me."
+
+policy:
+  allow_implicit_invocation: true
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "mercadopago"
+      description: "Official Mercado Pago MCP server — create_test_user, add_money_test_user, search_documentation."
+      transport: "streamable_http"
+      url: "https://mcp.mercadopago.com/mcp"

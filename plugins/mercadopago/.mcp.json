@@ -1,0 +1,11 @@
+{
+  "mcp_servers": {
+    "mercadopago": {
+      "url": "https://mcp.mercadopago.com/mcp",
+      "http_headers": {
+        "X-Plugin-Version": "1.0.0",
+        "X-Invocation-Context": "router"
+      }
+    }
+  }
+}

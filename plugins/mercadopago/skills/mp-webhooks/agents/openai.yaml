@@ -1,0 +1,15 @@
+interface:
+  display_name: "Mercado Pago — Webhooks"
+  short_description: "Configure and validate Mercado Pago webhooks (HMAC-SHA256)."
+  default_prompt: "Help me set up and validate Mercado Pago webhooks."
+
+policy:
+  allow_implicit_invocation: true
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "mercadopago"
+      description: "Official Mercado Pago MCP server — save_webhook, notifications diagnostics."
+      transport: "streamable_http"
+      url: "https://mcp.mercadopago.com/mcp"

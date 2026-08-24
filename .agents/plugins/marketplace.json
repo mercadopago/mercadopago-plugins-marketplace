@@ -1,0 +1,21 @@
+{
+  "name": "mercadopago-plugins-marketplace",
+  "interface": {
+    "displayName": "Mercado Pago"
+  },
+  "plugins": [
+    {
+      "name": "mercadopago",
+      "source": {
+        "source": "git-subdir",
+        "url": "https://github.com/mercadopago/mercadopago-plugins-marketplace",
+        "path": "./plugins/mercadopago"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

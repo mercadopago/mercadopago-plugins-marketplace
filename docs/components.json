@@ -1,0 +1,139 @@
+{
+  "plugin": {
+    "name": "mercadopago",
+    "version": "1.0.0",
+    "description": "Mercado Pago full-product integration toolkit for Codex. AGENTS.md routes to four orchestration skills (mp-integrate, mp-webhooks, mp-test-setup, mp-review). Scaffolding works without MCP auth; live docs, credential lookup, and test-user creation require the official Mercado Pago MCP server.",
+    "repository": "https://github.com/mercadopago/mercadopago-plugins-marketplace",
+    "license": "Apache-2.0",
+    "author": "Mercado Pago Developer Experience",
+    "keywords": [
+      "mercadopago",
+      "payments",
+      "checkout",
+      "webhooks",
+      "qr",
+      "point",
+      "subscriptions",
+      "marketplace",
+      "wallet",
+      "fintech",
+      "meli"
+    ]
+  },
+  "stats": {
+    "total": 6,
+    "skills": 4,
+    "agents": 0,
+    "commands": 0,
+    "hooks": 2
+  },
+  "components": [
+    {
+      "name": "mp-integrate",
+      "type": "skill",
+      "description": "Wizard that scaffolds a complete Mercado Pago integration from official and bundled sources, using MCP only for selected account actions or documentation gaps. Use whenever the developer wants to add or migrate a Mercado Pago payment flow.",
+      "version": "1.0.0",
+      "tags": [
+        "mercadopago",
+        "integration",
+        "wizard",
+        "checkout",
+        "bricks",
+        "qr",
+        "point",
+        "subscriptions",
+        "marketplace",
+        "payouts",
+        "smartapps",
+        "orders",
+        "sdk"
+      ],
+      "license": "Apache-2.0",
+      "path": "plugins/mercadopago/skills/mp-integrate/SKILL.md",
+      "references": [
+        "references/guides/bricks.md",
+        "references/guides/checkout-api.md",
+        "references/guides/checkout-pro.md",
+        "references/guides/marketplace.md",
+        "references/guides/migrate-to-orders.md",
+        "references/guides/payouts.md",
+        "references/guides/point.md",
+        "references/guides/qr.md",
+        "references/guides/smartapps.md",
+        "references/guides/subscriptions.md",
+        "references/guides/wallet-connect.md",
+        "references/guides/webhooks.md",
+        "references/products.md",
+        "references/recommendation-template.md",
+        "references/terminology-rules.md"
+      ]
+    },
+    {
+      "name": "mp-review",
+      "type": "skill",
+      "description": "Review a Mercado Pago integration with a local cross-cutting security checklist and official MCP quality tools on demand. Use after the integration is in place, or when the `mp-review` skill is invoked.",
+      "version": "1.0.0",
+      "tags": [
+        "mercadopago",
+        "review",
+        "quality",
+        "checklist",
+        "security"
+      ],
+      "license": "Apache-2.0",
+      "path": "plugins/mercadopago/skills/mp-review/SKILL.md",
+      "references": []
+    },
+    {
+      "name": "mp-test-setup",
+      "type": "skill",
+      "description": "Create test users and add funds to them for Mercado Pago testing. Wraps create_test_user and add_money_test_user from the MCP. Clarifies that credentials come in APP_USR- (Orders API, Checkout Pro, Point, QR) and TEST- (Checkout API, Bricks, Payments API) formats — both are valid and actively issued.",
+      "version": "1.0.0",
+      "tags": [
+        "mercadopago",
+        "testing",
+        "test-user",
+        "sandbox",
+        "credentials"
+      ],
+      "license": "Apache-2.0",
+      "path": "plugins/mercadopago/skills/mp-test-setup/SKILL.md",
+      "references": []
+    },
+    {
+      "name": "mp-webhooks",
+      "type": "skill",
+      "description": "Configure and validate Mercado Pago webhooks. Wraps the MCP webhook tools (save_webhook, notifications_history) and provides the HMAC-SHA256 signature validation pattern that every receiver must implement. Use when adding, debugging, or hardening notification handling.",
+      "version": "1.0.0",
+      "tags": [
+        "mercadopago",
+        "webhooks",
+        "notifications",
+        "ipn",
+        "hmac",
+        "signature"
+      ],
+      "license": "Apache-2.0",
+      "path": "plugins/mercadopago/skills/mp-webhooks/SKILL.md",
+      "references": []
+    },
+    {
+      "name": "validate_mp_credentials",
+      "type": "hook",
+      "description": "Mercado Pago developer plugin hooks",
+      "trigger": "PreToolUse",
+      "matcher": "Bash",
+      "hook_type": "command",
+      "path": "plugins/mercadopago/hooks/hooks.json"
+    },
+    {
+      "name": "check_version",
+      "type": "hook",
+      "description": "Mercado Pago developer plugin hooks",
+      "trigger": "UserPromptSubmit",
+      "matcher": "",
+      "hook_type": "command",
+      "path": "plugins/mercadopago/hooks/hooks.json"
+    }
+  ]
+}
