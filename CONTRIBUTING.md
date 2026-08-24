@@ -6,7 +6,7 @@ Thanks for improving the Mercado Pago Plugins Marketplace.
 
 This repository hosts plugins for more than one runtime. Keep runtime-specific
 code, manifests, skills, hooks, and user documentation inside the relevant
-`plugins/<plugin-id>` directory. Do not add one runtime's instructions or
+`plugins/<product-id>/<runtime-id>` directory. Do not add one runtime's instructions or
 configuration to another plugin.
 
 ## Before opening a pull request
@@ -26,7 +26,7 @@ or documentation.
 
 ## Adding a runtime or plugin
 
-- Keep each plugin self-contained under `plugins/<plugin-id>`.
+- Keep each plugin self-contained under `plugins/<product-id>/<runtime-id>`.
 - Add it only to the appropriate marketplace metadata.
 - Keep root documentation runtime-neutral.
 - Document runtime-specific installation and security requirements alongside

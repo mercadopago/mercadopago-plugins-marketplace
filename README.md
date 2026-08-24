@@ -11,7 +11,7 @@ exposes the plugins to the runtimes that support it.
 
 | Plugin | Runtime | Location |
 |---|---|---|
-| Mercado Pago | Codex | [`plugins/mercadopago`](./plugins/mercadopago) |
+| Mercado Pago | Codex | [`plugins/mercadopago/codex`](./plugins/mercadopago/codex) |
 
 ## Repository layout
 
@@ -19,14 +19,14 @@ exposes the plugins to the runtimes that support it.
 mercadopago-plugins-marketplace/
 ├── .agents/plugins/marketplace.json  # Codex marketplace metadata
 ├── plugins/
-│   └── <plugin-id>/                  # self-contained plugin package
+│   └── <product-id>/<runtime-id>/    # self-contained runtime package
 ├── docs/                             # marketplace documentation
 └── scripts/                          # repository-level validation tooling
 ```
 
 ## Adding a plugin
 
-1. Create a self-contained directory under `plugins/<plugin-id>`.
+1. Create a self-contained directory under `plugins/<product-id>/<runtime-id>`.
 2. Add the manifest required by its runtime.
 3. Register it only in the marketplace metadata for that runtime.
 4. Include plugin-specific documentation and deterministic validation.

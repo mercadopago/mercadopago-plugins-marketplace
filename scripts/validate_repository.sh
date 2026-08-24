@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-# Single deterministic quality gate for this public Codex plugin.
+# Single deterministic quality gate for the Mercado Pago Codex plugin.
 
 set -eu
 
@@ -7,34 +7,36 @@ repo_root="$(git rev-parse --show-toplevel)"
 cd "$repo_root"
 
 python3 -m json.tool .agents/plugins/marketplace.json >/dev/null
-python3 -m json.tool plugins/mercadopago/.codex-plugin/plugin.json >/dev/null
-python3 -m json.tool plugins/mercadopago/.mcp.json >/dev/null
-python3 -m json.tool plugins/mercadopago/hooks/hooks.json >/dev/null
-python3 -m py_compile plugins/mercadopago/hooks/validate_mp_credentials.py
-python3 -m unittest plugins/mercadopago/hooks/test_validate_mp_credentials.py
+plugin_dir="plugins/mercadopago/codex"
 
-for script in plugins/mercadopago/scripts/*.mjs; do
+python3 -m json.tool "$plugin_dir/.codex-plugin/plugin.json" >/dev/null
+python3 -m json.tool "$plugin_dir/.mcp.json" >/dev/null
+python3 -m json.tool "$plugin_dir/hooks/hooks.json" >/dev/null
+python3 -m py_compile "$plugin_dir/hooks/validate_mp_credentials.py"
+python3 -m unittest "$plugin_dir/hooks/test_validate_mp_credentials.py"
+
+for script in "$plugin_dir"/scripts/*.mjs; do
   [ -f "$script" ] || continue
   node --check "$script"
 done
 
-for test in plugins/mercadopago/scripts/test-*.mjs; do
+for test in "$plugin_dir"/scripts/test-*.mjs; do
   [ -f "$test" ] || continue
   node "$test"
 done
 
-skill_count="$(find plugins/mercadopago/skills -name SKILL.md -type f | wc -l | tr -d ' ')"
+skill_count="$(find "$plugin_dir/skills" -name SKILL.md -type f | wc -l | tr -d ' ')"
 [ "$skill_count" = "4" ] || {
   echo "ERROR: expected exactly 4 skills, found $skill_count" >&2
   exit 1
 }
 
-if grep -rl '^tools:' plugins/mercadopago/skills/*/SKILL.md >/dev/null 2>&1; then
+if grep -rl '^tools:' "$plugin_dir"/skills/*/SKILL.md >/dev/null 2>&1; then
   echo "ERROR: Codex skills must not declare top-level tools" >&2
   exit 1
 fi
 
-unexpected_references="$(find plugins/mercadopago/skills -name references -type d 2>/dev/null | grep -v '/mp-integrate/references$' || true)"
+unexpected_references="$(find "$plugin_dir/skills" -name references -type d 2>/dev/null | grep -v '/mp-integrate/references$' || true)"
 [ -z "$unexpected_references" ] || {
   echo "ERROR: unexpected references directories:" >&2
   echo "$unexpected_references" >&2

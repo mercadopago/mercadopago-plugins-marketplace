@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate docs/components.json from plugin source files.
 
-Scans skills, agents, commands, and hooks under plugins/mercadopago/
+Scans skills, agents, commands, and hooks under plugins/mercadopago/codex/
 and produces a single JSON catalog consumed by the static website.
 
 Uses only Python stdlib — no external dependencies.
@@ -14,7 +14,7 @@ import argparse
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-PLUGIN_DIR = ROOT / "plugins" / "mercadopago"
+PLUGIN_DIR = ROOT / "plugins" / "mercadopago" / "codex"
 OUTPUT = ROOT / "docs" / "components.json"
 
 
@@ -118,7 +118,7 @@ def _parse_skill(skill_file: Path) -> dict:
 
 
 def collect_skills() -> list:
-    """Collect top-level skills from plugins/mercadopago/skills/*/SKILL.md."""
+    """Collect top-level skills from plugins/mercadopago/codex/skills/*/SKILL.md."""
     components = []
     skills_dir = PLUGIN_DIR / "skills"
     if not skills_dir.exists():
@@ -135,7 +135,7 @@ def collect_skills() -> list:
 
 
 def collect_agents() -> list:
-    """Collect agents from plugins/mercadopago/agents/*.md."""
+    """Collect agents from plugins/mercadopago/codex/agents/*.md."""
     components = []
     agents_dir = PLUGIN_DIR / "agents"
     if not agents_dir.exists():
@@ -161,7 +161,7 @@ def collect_agents() -> list:
 
 
 def collect_commands() -> list:
-    """Collect commands from plugins/mercadopago/commands/*.md."""
+    """Collect commands from plugins/mercadopago/codex/commands/*.md."""
     components = []
     commands_dir = PLUGIN_DIR / "commands"
     if not commands_dir.exists():
@@ -188,7 +188,7 @@ def collect_commands() -> list:
 
 
 def collect_hooks() -> list:
-    """Collect hooks from plugins/mercadopago/hooks/hooks.json."""
+    """Collect hooks from plugins/mercadopago/codex/hooks/hooks.json."""
     components = []
     hooks_file = PLUGIN_DIR / "hooks" / "hooks.json"
     if not hooks_file.is_file():

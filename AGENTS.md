@@ -2,7 +2,7 @@
 
 This repository hosts Mercado Pago plugins for multiple runtimes.
 
-- Keep runtime-specific behavior inside `plugins/<plugin-id>`.
+- Keep runtime-specific behavior inside `plugins/<product-id>/<runtime-id>`.
 - Read the instructions and documentation in the plugin being changed before
   modifying it.
 - Do not copy manifests, commands, hooks, or runtime assumptions between

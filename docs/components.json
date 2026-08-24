@@ -49,7 +49,7 @@
         "sdk"
       ],
       "license": "Apache-2.0",
-      "path": "plugins/mercadopago/skills/mp-integrate/SKILL.md",
+      "path": "plugins/mercadopago/codex/skills/mp-integrate/SKILL.md",
       "references": [
         "references/guides/bricks.md",
         "references/guides/checkout-api.md",
@@ -81,7 +81,7 @@
         "security"
       ],
       "license": "Apache-2.0",
-      "path": "plugins/mercadopago/skills/mp-review/SKILL.md",
+      "path": "plugins/mercadopago/codex/skills/mp-review/SKILL.md",
       "references": []
     },
     {
@@ -97,7 +97,7 @@
         "credentials"
       ],
       "license": "Apache-2.0",
-      "path": "plugins/mercadopago/skills/mp-test-setup/SKILL.md",
+      "path": "plugins/mercadopago/codex/skills/mp-test-setup/SKILL.md",
       "references": []
     },
     {
@@ -114,7 +114,7 @@
         "signature"
       ],
       "license": "Apache-2.0",
-      "path": "plugins/mercadopago/skills/mp-webhooks/SKILL.md",
+      "path": "plugins/mercadopago/codex/skills/mp-webhooks/SKILL.md",
       "references": []
     },
     {
@@ -124,7 +124,7 @@
       "trigger": "PreToolUse",
       "matcher": "Bash",
       "hook_type": "command",
-      "path": "plugins/mercadopago/hooks/hooks.json"
+      "path": "plugins/mercadopago/codex/hooks/hooks.json"
     },
     {
       "name": "check_version",
@@ -133,7 +133,7 @@
       "trigger": "UserPromptSubmit",
       "matcher": "",
       "hook_type": "command",
-      "path": "plugins/mercadopago/hooks/hooks.json"
+      "path": "plugins/mercadopago/codex/hooks/hooks.json"
     }
   ]
 }
