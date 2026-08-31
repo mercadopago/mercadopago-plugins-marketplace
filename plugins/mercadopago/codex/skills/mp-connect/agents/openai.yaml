@@ -1,0 +1,15 @@
+interface:
+  display_name: "Mercado Pago — Connect"
+  short_description: "Connect or verify access to the Mercado Pago MCP."
+  default_prompt: "Connect Mercado Pago for me."
+
+policy:
+  allow_implicit_invocation: true
+
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "mercadopago"
+      description: "Official Mercado Pago MCP server — OAuth authentication and account tools."
+      transport: "streamable_http"
+      url: "https://mcp.mercadopago.com/mcp"

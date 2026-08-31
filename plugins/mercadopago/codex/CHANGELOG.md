@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Codex parity entry flows for the Mercado Pago application, credential choice,
+  complete seven-step integration journey, MCP OAuth connection, and standalone
+  test-card lookup.
 - Generic Checkout Pro and Checkout API CTA detection, resolution, and
   acceptance checks.
 - Deterministic Checkout API checks for a separate payment screen, associated
@@ -52,7 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Marketplace entry at `.agents/plugins/marketplace.json`.
 - Global routing in `AGENTS.md` (replaces the Claude router agent).
 - MCP server configuration (`.mcp.json`) for `mcp.mercadopago.com/mcp` via streamable HTTP.
-- Four orchestration skills, each with `SKILL.md` and `agents/openai.yaml`:
+- Four initial orchestration skills, each with `SKILL.md` and `agents/openai.yaml`:
   - `mp-integrate` — integration scaffolding wizard.
   - `mp-webhooks` — HMAC-SHA256 webhook validation, configure/simulate/diagnose.
   - `mp-test-setup` — create test users and load funds.

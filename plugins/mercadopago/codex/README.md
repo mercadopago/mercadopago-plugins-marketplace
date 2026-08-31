@@ -1,6 +1,6 @@
 # mercadopago
 
-Mercado Pago full-product integration toolkit for Codex. (v1.0.0)
+Mercado Pago full-product integration toolkit for Codex. (v1.0.1)
 
 > **Code scaffolding works without MCP authentication** using bundled references and the official per-country `llms.txt` when it is accessible. MCP is never a prerequisite for scaffold: if a live detail is unavailable, the plugin generates the safe supported structure and labels the limitation rather than inventing it. Credential lookup (`get_credentials`), test-user creation, webhook registration, real-resource operations, and commercial/private-kit access require the authenticated Mercado Pago MCP server — run `codex mcp login mercadopago` only for those selected actions.
 
@@ -14,7 +14,7 @@ After installing the plugin, connect it to your Mercado Pago account via OAuth �
 
 ## Architecture
 
-`AGENTS.md` router, five skills, one MCP. The plugin is an **orchestrator**, not a documentation container. All product knowledge lives in the MCP, the official per-country `llms.txt`, and the bundled `references/`; the skills translate developer intent into the right MCP queries and assemble the response.
+`AGENTS.md` router, six skills, one MCP. The plugin is an **orchestrator**, not a documentation container. All product knowledge lives in the MCP, the official per-country `llms.txt`, and the bundled `references/`; the skills translate developer intent into the right MCP queries and assemble the response.
 
 In Codex the routing logic lives in `AGENTS.md` (there is no separate bundled "router agent" file as in the Claude plugin) plus each skill's own `description`.
 
@@ -24,7 +24,7 @@ In Codex the routing logic lives in `AGENTS.md` (there is no separate bundled "r
 │  - product/country detection from the message          │
 │  - mode detection (Orders API vs legacy)               │
 │  - MCP-gate every interaction (states A/B/C)           │
-│  - delegates to one of five skills                     │
+│  - delegates to one of six skills                      │
 └──────────────────────────┬─────────────────────────────┘
                            │
      ┌──────────────┬──────┴───────┬──────────────┬──────────────┐
@@ -36,6 +36,8 @@ mp-integrate   mp-webhooks    mp-test-setup    mp-review      mp-migrate
                                cards offline)   floor)         WebFetch docs)
      │              │              │              │              │
      └──────────────┴──────────────┴──────────────┴──────────────┘
+                           │
+                      mp-connect (MCP OAuth)
                            │
                            ▼
               ┌───────────────────────────┐
@@ -62,6 +64,7 @@ mp-integrate   mp-webhooks    mp-test-setup    mp-review      mp-migrate
 | `mp-test-setup` | Creates test users and loads funds (needs MCP); also returns test cards per country (no MCP needed). Credentials come in `APP_USR-` (Orders API, Checkout Pro, Point, QR) and `TEST-` (Checkout API, Bricks) formats — both valid and actively issued. | `create_test_user`, `add_money_test_user` |
 | `mp-review` | Runs the official quality checklist live + a fixed cross-cutting security floor. Suggests `quality_evaluation` when the integration produced a compatible payment/order id. | `quality_checklist`, `quality_evaluation` |
 | `mp-migrate` | Migrates legacy Instore integrations (QR Code and Point) from legacy APIs to the Orders API. Scans the project, proposes a diff, and applies only after confirmation. Works offline via WebFetch of the official migration docs. Lives at `skills/mp-integrate/SKILL-migrate.md`. | WebFetch (official migration docs); `save_webhook` when updating the topic |
+| `mp-connect` | Verifies or starts the OAuth connection to the Mercado Pago MCP. | `application_list`, `authenticate` |
 
 ## Invoking the plugin
 
@@ -74,6 +77,7 @@ Codex has no slash commands. You invoke the plugin by describing what you want i
 | create a test user, load funds, or get test cards for a country | `mp-test-setup` |
 | audit / review / score an existing integration (scopes: `security`, `webhooks`, `checkout`, `qr`, `subscriptions`, `marketplace`, `quality`, `full`) | `mp-review` |
 | migrate an existing QR/Point (Instore) integration to the Orders API | `mp-migrate` |
+| connect, authenticate, log in, or verify the Mercado Pago MCP | `mp-connect` |
 
 MCP connection is managed with `codex mcp login mercadopago`; Codex plugins use
 natural-language requests instead of slash commands.
