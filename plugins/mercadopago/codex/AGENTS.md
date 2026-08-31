@@ -19,6 +19,22 @@ Credential tab names by language (never mix):
 - Portuguese → `Teste` (test) · `Produção` (production)
 - English → `Test tab` · `Production tab`
 
+## Interactive choices
+
+When a workflow needs the developer to make a decision with **two or three
+mutually exclusive choices**, use the platform's structured single-choice
+question facility so the interface presents radio buttons. Ask one decision at
+a time, use a short localized question, and put the recommended choice first.
+
+Use a normal text question only when the answer is open-ended, requires a
+value such as a URL or identifier, or has more than three meaningful choices.
+If structured questions are unavailable in the active client, fall back to the
+same localized text question. Never show a fake numbered or markdown menu in
+place of an available structured choice.
+
+This rule applies to every skill and supersedes references below to a “plain
+chat question” when the question meets the criteria above.
+
 ## The six skills
 
 | Skill | Purpose | Route here when the developer… |
