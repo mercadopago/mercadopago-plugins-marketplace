@@ -16,12 +16,35 @@ This skill is the only place test users get created. It exists because the testi
 
 ---
 
+## Pure test-cards request — short circuit
+
+When the developer asks only for test cards (for example, "cartões de teste
+para BR"), do **not** run the readiness pre-check, do not ask about an app or
+credentials, and do not create a test user. Resolve the country from the
+request or `.mp-integrate-progress.md`, then execute **Step 4 — Test cards**
+and return its card table. This is fully offline whenever the bundled reference
+contains the country.
+
+---
+
 ## Pre-check — confirm readiness before creating test users
 
 > You are at **step 4 of 7** in the integration journey:
-> `1. Create app · 2. Get TEST creds · 3. Scaffold · 4. Create test user ← here · 5. E2E · 6. the `mp-review` skill · 7. Prod`
+>
+> ```text
+> Integration journey:
+>   1. ✓ Create an application in Developer Dashboard
+>   2. ✓ Get test credentials (from the {test_tab} tab)
+>   3. ✓ Scaffold integration code
+>   4.   Create a test user and add funds                 ← you are here
+>   5.   Test end-to-end with test cards
+>   6.   Run mp-review and the homologation form
+>   7.   Switch to production credentials and go live
+> ```
 
-Before creating test users, confirm the basics via a plain chat question (up to 3 questions — skip any already in `.mp-integrate-progress.md`):
+Before creating test users, confirm the basics with one plain-language
+question at a time. Wait for each reply and skip only fields already recorded
+in `.mp-integrate-progress.md`:
 
 1. **Account** — Skip if already confirmed in `.mp-integrate-progress.md`. Otherwise: "Do you have a Mercado Pago developer account?" → `Yes` / `No`
 2. **Credentials** — "Do you have your `APP_USR-` access token?" → `Yes` / `No`

@@ -1,8 +1,8 @@
 {
   "plugin": {
     "name": "mercadopago",
-    "version": "1.0.0",
-    "description": "Mercado Pago full-product integration toolkit for Codex. AGENTS.md routes to four orchestration skills (mp-integrate, mp-webhooks, mp-test-setup, mp-review). Scaffolding works without MCP auth; live docs, credential lookup, and test-user creation require the official Mercado Pago MCP server.",
+    "version": "1.0.1",
+    "description": "Mercado Pago full-product integration toolkit for Codex. AGENTS.md routes to integration, webhooks, test setup, review, migration, and MCP connection flows. Scaffolding works without MCP auth; live docs, credential lookup, and test-user creation require the official Mercado Pago MCP server.",
     "repository": "https://github.com/mercadopago/mercadopago-plugins-marketplace",
     "license": "Apache-2.0",
     "author": "Mercado Pago Developer Experience",
@@ -21,13 +21,29 @@
     ]
   },
   "stats": {
-    "total": 6,
-    "skills": 4,
+    "total": 7,
+    "skills": 5,
     "agents": 0,
     "commands": 0,
     "hooks": 2
   },
   "components": [
+    {
+      "name": "mp-connect",
+      "type": "skill",
+      "description": "Connect or verify Mercado Pago MCP authentication. Use when the developer asks to connect, authenticate, log in, or verify access to Mercado Pago tools.",
+      "version": "1.0.0",
+      "tags": [
+        "mercadopago",
+        "mcp",
+        "oauth",
+        "authentication",
+        "connect"
+      ],
+      "license": "Apache-2.0",
+      "path": "plugins/mercadopago/codex/skills/mp-connect/SKILL.md",
+      "references": []
+    },
     {
       "name": "mp-integrate",
       "type": "skill",

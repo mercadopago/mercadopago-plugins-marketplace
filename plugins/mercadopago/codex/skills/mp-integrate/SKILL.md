@@ -340,9 +340,73 @@ node "${PLUGIN_ROOT}/scripts/validate-payouts-integration.mjs" . "{AR|BR}"
 
 ---
 
+## Step 0 — Required opening: app, credentials, and integration journey
+
+Before asking about product, country, mode, or client, execute this opening.
+This restores the same journey that Claude runs from its integration command; it is not
+optional in Codex just because Codex invokes skills by natural language.
+
+1. Read `.mp-integrate-progress.md` if present. It is a resume checkpoint, not
+   a source of credentials. Never store a secret in it. Inspect existing
+   manifests before checking executables; check only prerequisites required by
+   the detected stack and selected operation. Never install an OS package,
+   invoke `sudo`, or modify a system runtime. If a prerequisite is missing,
+   offer official installation guidance and wait for confirmation before a
+   dependent operation.
+2. When `application_id` / the app-exists answer is absent, ask whether the
+   developer already has an application in Mercado Pago Developer Dashboard.
+   Wait for the answer. If not, ask whether to create it with the connected
+   account or manually. Call `create_application` only after the explicit
+   request to create it with the connected account; otherwise show the
+   country-specific Developer Dashboard URL once country is known.
+3. Show the full seven-step integration journey in the developer's language,
+   with completed steps marked `✓` and exactly one current step marked
+   `← you are here`:
+
+   ```text
+   Integration journey:
+     1.   Create an application in Developer Dashboard
+     2.   Get test credentials (from the {test_tab} tab)
+     3.   Scaffold integration code
+     4.   Create a test user and add funds
+     5.   Test end-to-end with test cards
+     6.   Run mp-review and the homologation form
+     7.   Switch to production credentials and go live
+   ```
+
+   With an existing app, mark step 1 complete and point to step 2. Without an
+   app, point to step 1. Never shorten these descriptions.
+4. When neither the existing-app answer nor `developer_account: confirmed` is
+   present, ask whether the developer has a Mercado Pago developer account. If
+   not, show the country-specific Developer Dashboard URL once country is known
+   and block until the developer confirms the account is ready.
+5. When `credential_type` is absent, ask how the developer wants to provide
+   credentials: test credentials manually (recommended), import from their
+   connected Mercado Pago account, no credentials yet, or production
+   credentials. Wait for the answer before proceeding.
+   - Manual test credentials → persist `credential_type: test`; never request
+     a secret in chat.
+   - Import → use the on-demand MCP gate immediately before `application_list`
+     and `get_credentials`; let the developer select an app and only write a
+     real `.env` after they confirm the destination file.
+   - No credentials → explain the exact Dashboard path and block until they
+     confirm they can obtain them. `MP_ACCESS_TOKEN` and `MP_WEBHOOK_SECRET`
+     stay server-side; only `MP_PUBLIC_KEY` may reach a client.
+   - Production → require a separate explicit confirmation that real charges
+     can occur before persisting `credential_type: production`.
+6. Persist only the non-secret answers (`application_id`, `credential_type`,
+   `developer_account`, and the app-exists state) immediately, ensure the
+   checkpoint is ignored by Git, then continue to Step 1.
+
+Do not replace this opening with a code scaffold, a static list of questions,
+or a generic MCP authentication check. The selected account operation is the
+only reason to invoke the MCP.
+
 ## Step 1 — Parse `developer-provided context` and ask for missing context
 
-`developer-provided context` may include any combination of these flags. Anything missing must be asked via a plain chat question in batches of ≤4.
+`developer-provided context` may include any combination of these flags. Ask
+each missing dimension in its own plain-language question, wait for the reply,
+persist it, and only then ask the next dimension.
 
 | Flag | Values |
 |------|--------|
@@ -466,7 +530,7 @@ These are all the v3 anti-pattern. The developer cannot click on plain text. Do 
 
 | Order | Dimension | Header | Guidance |
 |-------|-----------|--------|-----------------|
-| 1 | `product` | "Product" | The 4 most likely products as buttons + "Other" auto-fallback. Pick the 4 from this priority: `checkout-pro`, `bricks`, `checkout-api`, `subscriptions` (most common). The remaining ones (`qr`, `point`, `marketplace`, `wallet-connect`, `money-out`, `smartapps`) are reachable via "Other". |
+| 1 | `product` | "Product" | Ask which product the developer wants in one natural-language question. Mention likely examples only when helpful; never present a fake clickable menu. Accept any supported product, including `qr`, `point`, `marketplace`, `wallet-connect`, `money-out`, and `smartapps`. |
 | 2 | `mode` | "Mode" | **Cross-reference LOCK 2 first.** Skip entirely when LOCK 2 says "Skip the mode question". When asked, only show modes that LOCK 2 explicitly allows for the chosen product. Never include "Orders API" as an option for `checkout-pro`. |
 | 3 | `client` | "Client" | Only if the product has a client component AND repo signals were ambiguous. Show the 3 most likely + Other. |
 | 4 | `brick` | "Brick" | Only when `product=bricks`. Options: `payment` / `card-payment` / `wallet` / `status-screen`. |
@@ -542,6 +606,7 @@ Fields to persist (write after each is resolved, do not wait until the end):
 - sdk: node
 - client: react
 - lang: es
+- developer_account: confirmed
 - credential_type: test
 - application_id: 123456789012345
 - brick: card-payment

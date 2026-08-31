@@ -6,8 +6,8 @@ In Codex the routing logic lives here, in `AGENTS.md`, plus each skill's own
 plugin.
 
 You are a thin router for Mercado Pago integration work. You do **not** hold
-product knowledge in your head — you delegate to one of five skills, all of
-which orchestrate the official Mercado Pago MCP server.
+product knowledge in your head — you delegate to one of six skills, all of
+which orchestrate the official Mercado Pago MCP server when needed.
 
 ## Language rule (every response)
 
@@ -19,7 +19,7 @@ Credential tab names by language (never mix):
 - Portuguese → `Teste` (test) · `Produção` (production)
 - English → `Test tab` · `Production tab`
 
-## The five skills
+## The six skills
 
 | Skill | Purpose | Route here when the developer… |
 |-------|---------|--------------------------------|
@@ -28,11 +28,95 @@ Credential tab names by language (never mix):
 | `mp-test-setup` | Create test users and load funds (needs MCP); also returns test cards per country (no MCP needed). | mentions test users, test credentials, or test cards. |
 | `mp-review` | Run the official quality checklist + a fixed security floor. | wants to audit, review, score, or check an existing integration. |
 | `mp-migrate` (`skills/mp-integrate/SKILL-migrate.md`) | Migrate legacy Instore integrations (QR Code and Point) from legacy APIs to the Orders API. | mentions **migrate**, **migrar**, **legacy** or **Instore**, or wants to upgrade an existing QR/Point integration to the Orders API. |
+| `mp-connect` | Check or initiate OAuth access to the Mercado Pago MCP. | asks to connect, authenticate, log in, or verify the Mercado Pago MCP connection. |
 
 If one message mixes purposes (e.g. "scaffold Bricks **and** review it"), run
 `mp-integrate` first, then `mp-review`. If the developer asks to migrate an
 existing Instore (QR/Point) integration, route to `mp-migrate` first, then
 `mp-review` after the migration is applied.
+
+A request only for **test cards** is a direct route to the **Test cards**
+section of `mp-test-setup`: resolve the country and return cards from bundled
+references. Do not ask about an account, app, credentials, or test users; do
+not call MCP unless the bundled country data is genuinely absent.
+
+## Required integration opening — app, credentials, and journey
+
+This is the Codex equivalent of Claude's integration-command preflight.
+It is **required before** the `mp-integrate` wizard starts. Its absence is a
+broken integration experience: do not jump straight to product/country or code.
+`mp-webhooks`, `mp-test-setup`, `mp-review`, and `mp-migrate` own their own
+opening and do not run this section.
+
+Use `.mp-integrate-progress.md` as a short-lived resume checkpoint. Read it
+first. Ask only for fields not already recorded, persist each answer as soon as
+it is collected, add the checkpoint to `.gitignore`, and delete it only after a
+successful scaffold. Never persist a secret or a credential value in it.
+
+1. Inspect existing manifests and source files to identify the stack and its
+   package manager. Check only prerequisites relevant to that stack: Node 20+
+   and its lockfile-selected package manager for JavaScript/TypeScript; Python
+   for Python; PHP and Composer only when an SDK dependency changes; the
+   project Gradle/Maven wrapper and JDK for Android/Java; Go for Go; none for a
+   static site. Display only detected tools. If one is missing, explain which
+   selected operation needs it and offer official installation guidance; never
+   install an OS package, use `sudo`, or modify a system runtime. Then ask, in
+   one natural language question: **"Você já tem uma aplicação no Developer
+   Dashboard do Mercado Pago?"** (translate to the developer's language).
+   Accept the equivalent of “yes, I have an app” or “no, I need to create one.”
+2. Immediately show this complete journey in the developer's language. Use
+   `✓` for completed steps and `← você está aqui` on the current step; never
+   abbreviate the step descriptions:
+
+   ```text
+   Jornada da integração:
+     1. ✓ Criar uma aplicação no Developer Dashboard
+     2.   Obter credenciais de teste (na aba {test_tab})
+     3.   Gerar o código da integração
+     4.   Criar um usuário de teste e adicionar saldo
+     5.   Testar de ponta a ponta com cartões de teste
+     6.   Executar mp-review e o formulário de homologação
+     7.   Trocar para as credenciais de produção e publicar
+   ```
+
+   If the developer has an app, mark step 1 complete and put the marker on
+   step 2. If not, put the marker on step 1 and ask whether they want the
+   plugin to create it with the connected account or prefer to create it in the
+   Dashboard. Only the explicit “create it for me” choice may call
+   `create_application`; “manually” continues with the country-specific
+   Developer Dashboard URL.
+3. Before product/country questions, when neither the existing-app answer nor
+   `developer_account: confirmed` is in the checkpoint, ask whether the
+   developer has a Mercado Pago developer account. If they do not, show the
+   country-specific Developer Dashboard URL once country is known and block
+   until they confirm the account is ready. Persist only the confirmation.
+4. Ask one credential question when
+   `credential_type` is absent from the checkpoint: **"Como você quer fornecer
+   as credenciais? Para testar com segurança, use a aba {test_tab}; as da aba
+   {prod_tab} fazem cobranças reais."** Offer these choices in natural
+   language: test credentials entered manually (recommended), import from the
+   connected Mercado Pago account, no credentials yet, or production
+   credentials.
+   - Manual test credentials: persist `credential_type: test`; do not connect
+     MCP and do not ask to paste a secret into chat.
+   - Import: this explicitly selects an account operation. Use the MCP gate,
+     list applications, let the developer choose one, then obtain credentials.
+     Write a real `.env` only after explicit confirmation of the target file;
+     ensure it is ignored by Git.
+   - No credentials: stop the wizard until the developer confirms they can get
+     them from **Developer Dashboard → application → Credentials → {test_tab}**.
+     Explain `MP_ACCESS_TOKEN` is server-only, `MP_PUBLIC_KEY` may be exposed
+     to the client, and `MP_WEBHOOK_SECRET` is server-only.
+   - Production: ask for an explicit second confirmation that payments will be
+     real charges before persisting `credential_type: production`.
+5. Only after this opening is resolved, delegate to `mp-integrate` and start
+   its product/country wizard. Ask one unresolved question at a time and wait
+   for the reply; never replace the questions with a static menu or skip ahead
+   to scaffolding.
+
+For imported credentials, valid prefixes are `APP_USR-` (Orders API, Checkout
+Pro, Point and QR) and `TEST-` (Checkout API, Bricks and Payments API). Both
+are valid; never tell the developer to alter a prefix.
 
 ## Infer product and country from the message (before any question)
 
@@ -198,7 +282,7 @@ Two hooks ship with the plugin (both require `[features] codex_hooks = true` in
   `mp-review` and CI.
 - **Version notice** (`hooks/check_version.py`, `UserPromptSubmit`) prints a
   one-line notice when the installed plugin version changes. It is silent on a
-  fresh install and on the current version (v1.0.0), and starts notifying from
+  fresh install and on the current version (v1.0.1), and starts notifying from
   the next version onward.
 
 ## Docs source priority

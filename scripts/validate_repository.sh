@@ -25,9 +25,17 @@ for test in "$plugin_dir"/scripts/test-*.mjs; do
   node "$test"
 done
 
-skill_count="$(find "$plugin_dir/skills" -name SKILL.md -type f | wc -l | tr -d ' ')"
-[ "$skill_count" = "4" ] || {
-  echo "ERROR: expected exactly 4 skills, found $skill_count" >&2
+expected_skills='mp-connect
+mp-integrate
+mp-review
+mp-test-setup
+mp-webhooks'
+actual_skills="$(find "$plugin_dir/skills" -mindepth 2 -maxdepth 2 -name SKILL.md -type f -exec dirname {} \; | sed 's#.*/##' | sort)"
+[ "$actual_skills" = "$expected_skills" ] || {
+  echo "ERROR: expected Codex skills:" >&2
+  printf '%s\n' "$expected_skills" >&2
+  echo "Found:" >&2
+  printf '%s\n' "$actual_skills" >&2
   exit 1
 }
 

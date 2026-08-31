@@ -143,6 +143,7 @@ try {
     'skills/mp-webhooks/SKILL.md',
     'skills/mp-review/SKILL.md',
     'skills/mp-test-setup/SKILL.md',
+    'skills/mp-connect/SKILL.md',
   ];
   for (const relative of runtimeInstructionFiles) {
     const instruction = fs.readFileSync(path.join(pluginRoot, relative), 'utf8');
@@ -175,6 +176,29 @@ try {
     throw new Error('mp-integrate must clearly block account operations when MCP is unavailable');
   }
   console.log('PASS offline-scaffold-contract: MCP is optional for scaffold and required for account operations');
+  const routerSource = fs.readFileSync(path.join(pluginRoot, 'AGENTS.md'), 'utf8');
+  const testSetupSource = fs.readFileSync(path.join(pluginRoot, 'skills/mp-test-setup/SKILL.md'), 'utf8');
+  const connectSkill = fs.readFileSync(path.join(pluginRoot, 'skills/mp-connect/SKILL.md'), 'utf8');
+  const requiredJourneyText = [
+    'Required integration opening — app, credentials, and journey',
+    'Criar uma aplicação no Developer Dashboard',
+    'Obter credenciais de teste',
+    'Criar um usuário de teste e adicionar saldo',
+    'Executar mp-review e o formulário de homologação',
+    'developer_account: confirmed',
+  ];
+  if (!requiredJourneyText.every(text => routerSource.includes(text))
+      || !routerSource.includes('`mp-connect`')
+      || !routerSource.includes('Check only prerequisites relevant to that stack')
+      || !testSetupSource.includes('Pure test-cards request — short circuit')
+      || !testSetupSource.includes('one plain-language\nquestion at a time')
+      || !integrateSkill.includes('Ask\neach missing dimension in its own plain-language question')
+      || /batches of ≤4|up to 3 questions/i.test(integrateSkill + testSetupSource)
+      || !connectSkill.includes('Attempt `application_list` directly')
+      || !connectSkill.includes('Do **not** call\n`complete_authentication` first')) {
+    throw new Error('Codex must preserve the Claude-equivalent app, credential, journey, connection, and test-card entry flows');
+  }
+  console.log('PASS claude-entry-flow-parity: app, credentials, journey, MCP connect, and test cards are covered');
   const preferenceInstructionFiles = [
     ...runtimeInstructionFiles,
     'skills/mp-integrate/references/terminology-rules.md',
