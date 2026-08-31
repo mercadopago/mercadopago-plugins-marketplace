@@ -502,13 +502,13 @@ Anything still unresolved after 1.a goes into the wizard in 1.b.
 
 **Always use the official Mercado Pago SDKs**, listed below, regardless of whether the developer mentions a wrapper or alternative library. The official SDKs are maintained by Mercado Pago and aligned with the live API.
 
-### Step 1.b — Ask one question at a time, in chat
+### Step 1.b — Ask one question at a time
 
 This is the most-violated rule of the wizard. **The two screenshots that broke the v4 wizard were caused by violating this section.** read it twice.
 
 **STOP-TEST before writing any chat output:**
 
-If your response includes ANY of these patterns, you are doing it wrong — abort and use a plain chat question instead:
+If your response includes ANY of these patterns, you are doing it wrong — abort and use the structured single-choice question facility when eligible, otherwise a natural-language text question:
 
 - `Question N of M`
 - `1. Country` / `2. Product` / `3. SDK` (numbered question list)
@@ -516,21 +516,24 @@ If your response includes ANY of these patterns, you are doing it wrong — abor
 - The phrase `Type the code` or `Reply with` or `Answer with`
 - Any markdown that looks like a menu the developer is supposed to read and respond to in free text
 
-These are all the v3 anti-pattern. The developer cannot click on plain text. Do not show an artificial menu; ask the next unresolved question in plain language.
+These are all the v3 anti-patterns. Do not show an artificial menu. For two or
+three mutually exclusive choices, ask the next unresolved question through the
+structured single-choice facility so the developer can select a radio button.
+For an open answer or more than three choices, ask in plain language.
 
 **HARD RULES — no exceptions:**
 
-1. The **first tool call after Step 0/1.a** MUST be a plain chat question. Do not perform an unrelated operation before asking the next unresolved question.
-2. a plain chat question runs **one tool call per dimension**, waiting for the answer before issuing the next call. The developer replies in chat before the next question.
-3. The chat output **before** the first a plain-language question MUST be ≤3 short lines — one line per auto-resolved dimension, plus an optional one-line "now I'll ask the rest". No menus, no numbered lists, no "I'll ask you 4 quick questions".
-4. **Between** a plain-language questions: ≤1 line of confirmation, then immediately the next call. Do not summarise progress, do not show "Question N of M".
+1. The **first interaction after Step 0/1.a** MUST ask the next unresolved decision. Use a structured single-choice question whenever it has two or three mutually exclusive choices; otherwise ask it in plain language. Do not perform an unrelated operation first.
+2. Ask **one dimension at a time**, wait for the answer, then ask the next one. Do not bundle decisions.
+3. The chat output before the first question MUST be ≤3 short lines — one line per auto-resolved dimension, plus an optional one-line "now I'll ask the rest". No menus, no numbered lists, no "I'll ask you 4 quick questions".
+4. Between questions: ≤1 line of confirmation, then immediately ask the next decision. Do not summarise progress or show "Question N of M".
 5. When a value is not covered by the suggested examples, ask the developer to provide it in their next reply.
 
 **Order of a plain-language questions** — only for dimensions still unresolved after Step 1.a. Skip any dimension that is already known. Do NOT ask about dimensions the Product Matrix marks `n/a` for the chosen product.
 
 | Order | Dimension | Header | Guidance |
 |-------|-----------|--------|-----------------|
-| 1 | `product` | "Product" | Ask which product the developer wants in one natural-language question. Mention likely examples only when helpful; never present a fake clickable menu. Accept any supported product, including `qr`, `point`, `marketplace`, `wallet-connect`, `money-out`, and `smartapps`. |
+| 1 | `product` | "Product" | Ask which product the developer wants. Use structured selection only when the resolved candidates are two or three; otherwise use an open text question. Accept any supported product, including `qr`, `point`, `marketplace`, `wallet-connect`, `money-out`, and `smartapps`. |
 | 2 | `mode` | "Mode" | **Cross-reference LOCK 2 first.** Skip entirely when LOCK 2 says "Skip the mode question". When asked, only show modes that LOCK 2 explicitly allows for the chosen product. Never include "Orders API" as an option for `checkout-pro`. |
 | 3 | `client` | "Client" | Only if the product has a client component AND repo signals were ambiguous. Show the 3 most likely + Other. |
 | 4 | `brick` | "Brick" | Only when `product=bricks`. Options: `payment` / `card-payment` / `wallet` / `status-screen`. |
